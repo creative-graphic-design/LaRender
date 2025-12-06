@@ -3,7 +3,7 @@
 ```shell
 uv sync
 source .venv/bin/activate
-uv run --with pip spacy download en_core_web_sm
+uv run spacy download en_core_web_sm
 ```
 
 This repository is the official implementation of our [LaRender](https://xiaohangzhan.github.io/projects/larender/) accepted by ICCV 2025 as oral presentation.
