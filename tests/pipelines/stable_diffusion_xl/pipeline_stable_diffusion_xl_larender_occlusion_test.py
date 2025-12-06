@@ -421,25 +421,3 @@ def test_pipelie_stable_diffusion_xl_larender_occlusion(
         generator=torch.manual_seed(seed),
         **gligen_options,  # pass GLIGEN specific options if needed
     )
-
-
-@pytest.mark.parametrize(
-    argnames="model_id",
-    argvalues=(
-        "comin/IterComp",
-        "jiuntian/gligen-xl-1024",
-    ),
-)
-def test_pipelie_stable_diffusion_xl_larender_opacity(
-    model_id: str, device: torch.device, torch_dtype: torch.dtype
-):
-    pipe = StableDiffusionXLLaRenderPipeline.from_pretrained(
-        model_id,
-        torch_dtype=torch_dtype,
-        trust_remote_code=True,
-    )
-    pipe.scheduler = DPMSolverMultistepScheduler.from_config(
-        pipe.scheduler.config, use_karras_sigmas=True
-    )
-
-    raise NotImplementedError
