@@ -48,17 +48,28 @@ class LaRenderAttnProcessor(AttnProcessor):
         return masks
 
     def _cross_attention(self, attn: Attention, hidden_states, encoder_hidden_states):
+        assert (
+            attn.to_q is not None
+            and attn.to_k is not None
+            and attn.to_v is not None
+            and attn.to_out is not None
+        )
+
         query = attn.to_q(hidden_states)
         key = attn.to_k(encoder_hidden_states)
         value = attn.to_v(encoder_hidden_states)
+
         query = attn.head_to_batch_dim(query)
         key = attn.head_to_batch_dim(key)
         value = attn.head_to_batch_dim(value)
+
         attention_probs = attn.get_attention_scores(query, key)
+
         hidden_states = torch.bmm(attention_probs, value)
         hidden_states = attn.batch_to_head_dim(hidden_states)
         hidden_states = attn.to_out[0](hidden_states)
         hidden_states = attn.to_out[1](hidden_states)
+
         return hidden_states, attention_probs
 
     def __call__(  # type: ignore[override]
@@ -127,8 +138,6 @@ class LaRenderAttnProcessor(AttnProcessor):
             context = encoder_hidden_states[
                 :, i * token_max_length : (i + 1) * token_max_length, :
             ]
-            breakpoint()
-
             R_i, attn_probs = self._cross_attention(attn, hidden_states, context)
             R.append(R_i.reshape(R_i.shape[0], latent_h, latent_w, R_i.shape[2]))
 
