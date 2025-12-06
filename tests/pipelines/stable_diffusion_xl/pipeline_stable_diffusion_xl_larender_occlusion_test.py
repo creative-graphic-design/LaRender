@@ -421,3 +421,7 @@ def test_pipelie_stable_diffusion_xl_larender_occlusion(
         generator=torch.manual_seed(seed),
         **gligen_options,  # pass GLIGEN specific options if needed
     )
+
+    image = output.images[0]
+
+    breakpoint()
