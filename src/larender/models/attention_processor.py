@@ -162,15 +162,23 @@ class LaRenderAttnProcessor(AttnProcessor):
                 T[i] *= torch.exp(-torch.tensor(densities_multiplied[j]) * M[j])
 
         # rendering
-        S, R_out = 0, 0
+        S: Optional[torch.Tensor] = None
+        R_out: Optional[torch.Tensor] = None
 
         for i in range(num_objects):
             contrib = T[i] * (1 - math.exp(-densities_multiplied[i])) * M[i]
+            assert isinstance(contrib, torch.Tensor)
             contrib = contrib[None, :, :, None]  # unsqueeze 0, -1
-            R_out += contrib * R[i]
-            S += contrib
+            if R_out is None:
+                R_out = contrib * R[i]
+                S = contrib
+            else:
+                assert isinstance(R_out, torch.Tensor) and isinstance(S, torch.Tensor)
+                R_out += contrib * R[i]
+                S += contrib
+
+        assert isinstance(R_out, torch.Tensor) and isinstance(S, torch.Tensor)
         S = torch.clamp(S, min=1e-6)
         R_out /= S
 
-        breakpoint()
         return R_out.reshape(*hidden_states.shape)
