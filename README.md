@@ -1,5 +1,11 @@
 ## LaRender: Training-Free Occlusion Control in Image Generation via Latent Rendering
 
+```shell
+uv sync
+source .venv/bin/activate
+uv run spacy download en_core_web_sm
+```
+
 This repository is the official implementation of our [LaRender](https://xiaohangzhan.github.io/projects/larender/) accepted by ICCV 2025 as oral presentation.
 
 > [**LaRender: Training-Free Occlusion Control in Image Generation via Latent Rendering**](https://xiaohangzhan.github.io/projects/larender/)
